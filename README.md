@@ -3,7 +3,6 @@
 
 FoodVault is a full-stack web application designed to help users organize, manage, and share their favorite recipes in a simple and efficient way. It provides a seamless experience for storing personal recipes while enabling easy access and updates anytime.
 
----
 
 ##  Key Features
 
@@ -26,7 +25,6 @@ FoodVault is a full-stack web application designed to help users organize, manag
 - Personalized recipe collection  
 - Easy navigation and updates  
 
----
 
 ##  Tech Stack
 
@@ -44,7 +42,7 @@ FoodVault is a full-stack web application designed to help users organize, manag
 - JSON Web Tokens (JWT)  
 - Bcrypt.js (password hashing)  
 
----
+
 
 ##  Installation & Setup
 
@@ -67,7 +65,7 @@ Run the backend server:
 npm run dev
 ```
 
----
+
 
 ###  Frontend Setup
 
@@ -88,7 +86,6 @@ Run the frontend:
 npm run dev
 ```
 
----
 
 ##  How to Use
 
@@ -98,7 +95,6 @@ npm run dev
 4. View your recipes under **"My Recipes"**
 5. Update your password anytime from your profile
 
----
 
 ## 🔗 API Endpoints
 
@@ -116,7 +112,6 @@ npm run dev
 * `PUT /api/recipes/:id` → Update a recipe
 * `DELETE /api/recipes/:id` → Delete a recipe
 
----
 
 ##  Application Preview
 
@@ -128,13 +123,13 @@ npm run dev
 
 ![App Screenshot](https://github.com/user-attachments/assets/f43dd2ea-c42c-4e64-b8bf-1e047730fcd4)
 
----
+
 
 ##  License
 
 This project is licensed under the **MIT License**.
 
----
+
 
 ##  Author
 
