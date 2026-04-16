@@ -47,6 +47,16 @@ npm run dev
 - `GET/POST /api/recipes` - View/create recipes
 - `PUT/DELETE /api/recipes/:id` - Edit/delete recipes
 
+## Result 
+<img width="1920" height="1020" alt="Image" src="https://github.com/user-attachments/assets/08f4c5cd-fe4e-4cef-b57d-96e7a59d2451" />
+
+<img width="1920" height="1020" alt="Image" src="https://github.com/user-attachments/assets/0a7c9e4d-f108-4a1f-8ff2-e1713703fbd7" />
+
+<img width="1920" height="1020" alt="Image" src="https://github.com/user-attachments/assets/8da0d704-159a-4cea-8022-2cca3e62da0c" />
+
+<img width="1920" height="1020" alt="Image" src="https://github.com/user-attachments/assets/99dc5b01-8db3-466d-bab0-661ceb634621" />
+
+<img width="1920" height="1020" alt="Image" src="https://github.com/user-attachments/assets/f43dd2ea-c42c-4e64-b8bf-1e047730fcd4" />
 ## License
 MIT
 
