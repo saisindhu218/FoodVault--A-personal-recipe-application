@@ -1,6 +1,22 @@
 // MongoDB API Service Layer
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
+const parseApiResponse = async (response: Response) => {
+  const contentType = response.headers.get('content-type') || '';
+  const isJson = contentType.includes('application/json');
+
+  if (isJson) {
+    return response.json();
+  }
+
+  const text = await response.text();
+  return {
+    message: text?.trim()
+      ? `Server returned non-JSON response: ${text.slice(0, 120)}`
+      : 'Server returned non-JSON response'
+  };
+};
+
 interface User {
   id: string;
   username: string;
@@ -10,6 +26,15 @@ interface User {
 interface AuthResponse {
   token: string;
   user: User;
+  message: string;
+}
+
+interface ForgotPasswordResponse {
+  message: string;
+  temporaryPassword: string;
+}
+
+interface BasicMessageResponse {
   message: string;
 }
 
@@ -58,12 +83,14 @@ export const authApi = {
       body: JSON.stringify({ email, password, username }),
     });
     
+    const data = await parseApiResponse(response);
+
     if (!response.ok) {
-      const error = await response.json();
+      const error = data as { message?: string };
       throw new Error(error.message || 'Signup failed');
     }
-    
-    return response.json();
+
+    return data as AuthResponse;
   },
 
   signIn: async (email: string, password: string): Promise<AuthResponse> => {
@@ -73,12 +100,52 @@ export const authApi = {
       body: JSON.stringify({ email, password }),
     });
     
+    const data = await parseApiResponse(response);
+
     if (!response.ok) {
-      const error = await response.json();
+      const error = data as { message?: string };
       throw new Error(error.message || 'Sign in failed');
     }
-    
-    return response.json();
+
+    return data as AuthResponse;
+  },
+
+  forgotPassword: async (email: string): Promise<ForgotPasswordResponse> => {
+    const response = await fetch(`${API_URL}/auth/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await parseApiResponse(response);
+
+    if (!response.ok) {
+      const error = data as { message?: string };
+      throw new Error(error.message || 'Forgot password failed');
+    }
+
+    return data as ForgotPasswordResponse;
+  },
+
+  changePassword: async (currentPassword: string, newPassword: string): Promise<BasicMessageResponse> => {
+    const token = authApi.getToken();
+    const response = await fetch(`${API_URL}/auth/change-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
+
+    const data = await parseApiResponse(response);
+
+    if (!response.ok) {
+      const error = data as { message?: string };
+      throw new Error(error.message || 'Failed to change password');
+    }
+
+    return data as BasicMessageResponse;
   },
 
   signOut: () => {

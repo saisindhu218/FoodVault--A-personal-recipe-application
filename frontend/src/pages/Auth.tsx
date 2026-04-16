@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { ChefHat } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Auth = () => {
   const { signIn, signUp } = useAuth();
@@ -75,6 +76,12 @@ const Auth = () => {
               </TabsList>
               
               <TabsContent value="signin">
+                <div className="mb-4 text-right">
+                  <Link to="/forgot-password" className="text-sm text-primary hover:underline">
+                    Forgot Password?
+                  </Link>
+                </div>
+
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="signin-email">Email</Label>

@@ -65,6 +65,7 @@ const MyRecipes = () => {
       setRecipes(recipes.filter((r) => r.id !== deleteId));
       toast.success("Recipe deleted successfully");
     } catch (error: any) {
+      console.error("Failed to delete recipe:", error);
       toast.error("Failed to delete recipe");
     } finally {
       setDeleteId(null);
@@ -106,7 +107,16 @@ const MyRecipes = () => {
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">My Recipes</h1>
+        <div className="mb-8 flex items-center justify-between gap-4">
+          <h1 className="text-3xl font-bold">My Recipes</h1>
+          <button
+            type="button"
+            className="rounded-md border px-4 py-2 text-sm font-medium hover:bg-secondary"
+            onClick={() => navigate('/change-password')}
+          >
+            Change Password
+          </button>
+        </div>
 
         {getContent()}
       </div>

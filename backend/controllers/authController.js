@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const crypto = require('node:crypto');
 const User = require('../models/User');
 
 const generateToken = (userId) => {
@@ -98,8 +99,77 @@ const getMe = async (req, res) => {
   }
 };
 
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    if (!user) {
+      return res.status(404).json({ message: 'No user found with this email' });
+    }
+
+    // Generate a temporary password that the user can use to sign in immediately.
+    const temporaryPassword = crypto.randomBytes(4).toString('hex');
+
+    user.password = temporaryPassword;
+    await user.save();
+
+    res.json({
+      message: 'Temporary password generated successfully',
+      temporaryPassword
+    });
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    res.status(500).json({
+      message: 'Error handling forgot password request',
+      error: error.message
+    });
+  }
+};
+
+const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: 'Current password and new password are required' });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ message: 'New password must be at least 6 characters long' });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Current password is incorrect' });
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    res.json({ message: 'Password changed successfully' });
+  } catch (error) {
+    console.error('Change password error:', error);
+    res.status(500).json({
+      message: 'Error changing password',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
-  getMe
+  getMe,
+  forgotPassword,
+  changePassword
 };
