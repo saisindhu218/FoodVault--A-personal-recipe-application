@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       setUser(data.user);
-      navigate("/");
+      navigate("/recipes");
       return { error: null };
     } catch (error: any) {
       return { error: error.message };
@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       setUser(data.user);
-      navigate("/");
+      navigate("/recipes");
       return { error: null };
     } catch (error: any) {
       return { error: error.message };
@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signOut = () => {
     authApi.signOut();
     setUser(null);
-    navigate("/auth");
+    navigate("/");
   };
 
   // FIXED: Use useMemo to prevent unnecessary re-renders

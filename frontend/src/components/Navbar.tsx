@@ -14,15 +14,19 @@ const Navbar = () => {
     <nav className="border-b bg-card sticky top-0 z-50">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
+          <button
+            type="button"
+            className="flex items-center gap-2"
+            onClick={() => navigate("/recipes")}
+          >
             <ChefHat className="w-8 h-8 text-primary" />
             <span className="text-2xl font-bold">FoodVault</span>
-          </div>
+          </button>
           
           <div className="hidden md:flex items-center gap-2">
             <Button
-              variant={location.pathname === "/" ? "default" : "ghost"}
-              onClick={() => navigate("/")}
+              variant={location.pathname === "/recipes" ? "default" : "ghost"}
+              onClick={() => navigate("/recipes")}
             >
               <Home className="w-4 h-4 mr-2" />
               All Recipes

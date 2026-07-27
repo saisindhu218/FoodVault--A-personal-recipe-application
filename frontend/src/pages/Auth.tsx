@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,11 +7,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { ChefHat } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 const Auth = () => {
   const { signIn, signUp } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [searchParams] = useSearchParams();
+  const mode = searchParams.get("mode");
+  const [activeTab, setActiveTab] = useState(mode === "signup" ? "signup" : "signin");
+
+  useEffect(() => {
+    setActiveTab(mode === "signup" ? "signup" : "signin");
+  }, [mode]);
 
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -69,7 +76,7 @@ const Auth = () => {
             <CardDescription>Sign in to your account or create a new one</CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="signin" className="w-full">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="signin">Sign In</TabsTrigger>
                 <TabsTrigger value="signup">Sign Up</TabsTrigger>

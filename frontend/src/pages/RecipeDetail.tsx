@@ -39,7 +39,7 @@ const RecipeDetail = () => {
       setRecipe(data);
     } catch (error: any) {
       toast.error("Failed to load recipe");
-      navigate("/");
+      navigate("/recipes");
     } finally {
       setLoading(false);
     }
