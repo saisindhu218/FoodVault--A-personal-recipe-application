@@ -1,5 +1,26 @@
 const Recipe = require('../models/Recipe');
 
+const parseIngredients = (ingredients) => {
+  if (Array.isArray(ingredients)) {
+    return ingredients;
+  }
+
+  if (typeof ingredients === 'string' && ingredients.trim()) {
+    try {
+      const parsedIngredients = JSON.parse(ingredients);
+      if (Array.isArray(parsedIngredients)) {
+        return parsedIngredients;
+      }
+    } catch {
+      return [ingredients];
+    }
+
+    return [ingredients];
+  }
+
+  return [];
+};
+
 const getRecipes = async (req, res) => {
   try {
     const recipes = await Recipe.find({})
@@ -30,8 +51,14 @@ const getRecipe = async (req, res) => {
 
 const createRecipe = async (req, res) => {
   try {
+    const uploadedImageUrl = req.file
+      ? `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`
+      : undefined;
+
     const recipeData = {
       ...req.body,
+      ingredients: parseIngredients(req.body.ingredients),
+      imageUrl: uploadedImageUrl || req.body.imageUrl?.trim() || undefined,
       author: req.user._id
     };
 

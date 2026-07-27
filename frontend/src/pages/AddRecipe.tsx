@@ -11,34 +11,42 @@ import Navbar from "@/components/Navbar";
 import { toast } from "sonner";
 import { Plus, X } from "lucide-react";
 
+const createIngredientField = (value = "") => ({
+  id: crypto.randomUUID(),
+  value,
+});
+
 const AddRecipe = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
-  const [ingredients, setIngredients] = useState<string[]>([""]);
+  const [ingredients, setIngredients] = useState<Array<{ id: string; value: string }>>([
+    createIngredientField(),
+  ]);
   const [preparationSteps, setPreparationSteps] = useState("");
   const [prepTime, setPrepTime] = useState("");
   const [cookTime, setCookTime] = useState("");
   const [servings, setServings] = useState("");
   const [difficulty, setDifficulty] = useState<"Easy" | "Medium" | "Hard">("Medium");
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
 
   const handleAddIngredient = () => {
-    setIngredients([...ingredients, ""]);
+    setIngredients([...ingredients, createIngredientField()]);
   };
 
-  const handleRemoveIngredient = (index: number) => {
+  const handleRemoveIngredient = (id: string) => {
     if (ingredients.length > 1) {
-      setIngredients(ingredients.filter((_, i) => i !== index));
+      setIngredients(ingredients.filter((ingredient) => ingredient.id !== id));
     }
   };
 
-  const handleIngredientChange = (index: number, value: string) => {
-    const newIngredients = [...ingredients];
-    newIngredients[index] = value;
+  const handleIngredientChange = (id: string, value: string) => {
+    const newIngredients = ingredients.map((ingredient) =>
+      ingredient.id === id ? { ...ingredient, value } : ingredient
+    );
     setIngredients(newIngredients);
   };
 
@@ -50,7 +58,9 @@ const AddRecipe = () => {
       return;
     }
 
-    const filteredIngredients = ingredients.filter((ing) => ing.trim() !== "");
+    const filteredIngredients = ingredients
+      .map((ingredient) => ingredient.value)
+      .filter((ingredient) => ingredient.trim() !== "");
     
     if (filteredIngredients.length === 0) {
       toast.error("Please add at least one ingredient");
@@ -65,18 +75,31 @@ const AddRecipe = () => {
     setIsLoading(true);
 
     try {
-      await recipeApi.create({
-        title: title.trim(),
-        description: description.trim(),
-        category: category.trim(),
-        ingredients: filteredIngredients,
-        preparationSteps: preparationSteps.trim(),
-        prepTime: prepTime ? Number.parseInt(prepTime) : undefined,
-        cookTime: cookTime ? Number.parseInt(cookTime) : undefined,
-        servings: servings ? Number.parseInt(servings) : undefined,
-        difficulty,
-        imageUrl: imageUrl.trim() || undefined,
-      });
+      const formData = new FormData();
+      formData.append("title", title.trim());
+      formData.append("description", description.trim());
+      formData.append("category", category.trim());
+      formData.append("ingredients", JSON.stringify(filteredIngredients));
+      formData.append("preparationSteps", preparationSteps.trim());
+      formData.append("difficulty", difficulty);
+
+      if (prepTime) {
+        formData.append("prepTime", prepTime);
+      }
+
+      if (cookTime) {
+        formData.append("cookTime", cookTime);
+      }
+
+      if (servings) {
+        formData.append("servings", servings);
+      }
+
+      if (imageFile) {
+        formData.append("image", imageFile);
+      }
+
+      await recipeApi.create(formData);
 
       toast.success("Recipe added successfully!");
       navigate("/my-recipes");
@@ -179,23 +202,30 @@ const AddRecipe = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="imageUrl">Image URL (optional)</Label>
+                <Label htmlFor="image">Recipe Image (optional)</Label>
                 <Input
-                  id="imageUrl"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  placeholder="https://example.com/image.jpg"
-                  type="url"
+                  id="image"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
                 />
+                <p className="text-sm text-muted-foreground">
+                  Upload an image from your device. JPG, PNG, and WEBP files are supported.
+                </p>
+                {imageFile && (
+                  <p className="text-sm text-muted-foreground">
+                    Selected: {imageFile.name}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
                 <Label>Ingredients *</Label>
                 {ingredients.map((ingredient, index) => (
-                  <div key={index} className="flex gap-2">
+                  <div key={ingredient.id} className="flex gap-2">
                     <Input
-                      value={ingredient}
-                      onChange={(e) => handleIngredientChange(index, e.target.value)}
+                      value={ingredient.value}
+                      onChange={(e) => handleIngredientChange(ingredient.id, e.target.value)}
                       placeholder={`Ingredient ${index + 1}`}
                       className="flex-1"
                     />
@@ -204,7 +234,7 @@ const AddRecipe = () => {
                         type="button"
                         variant="outline"
                         size="icon"
-                        onClick={() => handleRemoveIngredient(index)}
+                        onClick={() => handleRemoveIngredient(ingredient.id)}
                       >
                         <X className="w-4 h-4" />
                       </Button>

@@ -1,9 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const fs = require('node:fs');
+const path = require('node:path');
 require('dotenv').config();
 
 const app = express();
+const uploadsDirectory = path.join(__dirname, 'uploads');
+
+fs.mkdirSync(uploadsDirectory, { recursive: true });
+app.disable('x-powered-by');
 
 // Middleware
 app.use(cors({
@@ -14,7 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve uploaded files statically
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static(uploadsDirectory));
 
 // Database connection with better error handling
 const startServer = async () => {

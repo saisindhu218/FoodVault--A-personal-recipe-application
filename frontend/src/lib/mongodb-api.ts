@@ -197,15 +197,18 @@ export const recipeApi = {
     return response.json();
   },
 
-  create: async (recipe: Omit<Recipe, '_id' | 'author' | 'createdAt' | 'updatedAt'>): Promise<Recipe> => {
+  create: async (
+    recipe: Omit<Recipe, '_id' | 'author' | 'createdAt' | 'updatedAt'> | FormData
+  ): Promise<Recipe> => {
     const token = authApi.getToken();
+    const isFormData = recipe instanceof FormData;
     const response = await fetch(`${API_URL}/recipes`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
         'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify(recipe),
+      body: isFormData ? recipe : JSON.stringify(recipe),
     });
     
     if (!response.ok) {
