@@ -115,13 +115,24 @@ npm run dev
 
 ##  Application Preview
 
-![App Screenshot](https://github.com/user-attachments/assets/08f4c5cd-fe4e-4cef-b57d-96e7a59d2451)
-
-![App Screenshot](https://github.com/user-attachments/assets/0a7c9e4d-f108-4a1f-8ff2-e1713703fbd7)
-
-![App Screenshot](https://github.com/user-attachments/assets/99dc5b01-8db3-466d-bab0-661ceb634621)
-
-![App Screenshot](https://github.com/user-attachments/assets/f43dd2ea-c42c-4e64-b8bf-1e047730fcd4)
+<table>
+  <tr>
+    <td align="center">
+      <img width="400" alt="App Screenshot 1" src="https://github.com/user-attachments/assets/08f4c5cd-fe4e-4cef-b57d-96e7a59d2451">
+    </td>
+    <td align="center">
+      <img width="400" alt="App Screenshot 2" src="https://github.com/user-attachments/assets/0a7c9e4d-f108-4a1f-8ff2-e1713703fbd7">
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img width="400" alt="App Screenshot 3" src="https://github.com/user-attachments/assets/99dc5b01-8db3-466d-bab0-661ceb634621">
+    </td>
+    <td align="center">
+      <img width="400" alt="App Screenshot 4" src="https://github.com/user-attachments/assets/f43dd2ea-c42c-4e64-b8bf-1e047730fcd4">
+    </td>
+  </tr>
+</table>
 
 
 
